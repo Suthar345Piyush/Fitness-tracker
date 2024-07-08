@@ -1,23 +1,65 @@
-import logo from './logo.svg';
+
+import React, { useState, useEffect } from 'react';
+import Header from './Components/Header';
+import StepCounter from './Components/StepCounter';
+import CalorieTracker from './Components/CalorieTracker';
+import Summary from './Components/Summary';
 import './App.css';
 
-function App() {
+
+
+
+
+const App = () => {
+  const [steps, setSteps] = useState(0);
+  const [calories, setCalories] = useState(0);
+
+
+
+
+
+  useEffect(() => {
+    // Check localStorage for previous values on mount
+    const savedSteps = localStorage.getItem('steps');
+    const savedCalories = localStorage.getItem('calories');
+    
+
+
+
+    if (savedSteps && savedCalories) {
+      setSteps(Number(savedSteps));
+      setCalories(Number(savedCalories));
+
+
+
+
+      // Clear localStorage after first load
+      localStorage.removeItem('steps');
+      localStorage.removeItem('calories');
+    }
+  }, []);
+
+
+
+  useEffect(() => {
+    // Store the current values in localStorage
+    localStorage.setItem('steps', steps);
+    localStorage.setItem('calories', calories);
+  }, [steps, calories]);
+
+
+
+
+
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Header />
+      <div className="trackers">
+        <StepCounter steps={steps} setSteps={setSteps} />
+        <CalorieTracker calories={calories} setCalories={setCalories} />
+        <Summary steps={steps} calories={calories} />
+      </div>
     </div>
   );
 }
